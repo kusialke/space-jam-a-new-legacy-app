@@ -1,7 +1,8 @@
 // A map of playerName to an array of playerPER values
 var playerMap = new Map();
 
-// Variables to keep track of constants
+
+// Variables to keep track of constants 
 const maxPlayersOnCourt = 5;
 const numQuarters = 4;
 
@@ -10,12 +11,12 @@ var currentQuarter = 0;
 var playersOnCourt = 0;
 var quarterInPlay = false;
 
-// Variables to track PER throughout the game
-var quarterPER = 0;
-var quarterAvePER = 0;
-var totalAvePER = 0;
+// Variables to track the PER throughout the game
+var quarterPER;
+var quarterAvePER;
+var totalAvePER;
 
-// Function to read in all player stats.
+// Function to read in all of the player stats
 function processPlayers(allPlayerStats) {
     // Split the data by newline into an array.
     var allPlayerStatLines = allPlayerStats.split(/\r\n|\n/);
@@ -23,7 +24,7 @@ function processPlayers(allPlayerStats) {
     // Remove the header line (first line)
     allPlayerStatLines.shift();
 
-    // Loop through the 15 players and create a map entry of player name to player PER
+    // Loop through the rows and create a map entry of player name to a list of player PER
     for (var statLine of allPlayerStatLines) {
         // Get all individual stat values
         var stats = statLine.split(',');
@@ -31,23 +32,22 @@ function processPlayers(allPlayerStats) {
         if (!stats || stats.length <= 1) continue; // empty line
 
         // The second column has the player name
-        var playerName = stats[nameIndex];
+        var playerName = stats[1];
 
-        // check if player exists in map
+        // Check if player exists in map
         if (!playerMap.has(playerName)) {
             // First time we see the player; Add them in!
             playerMap.set(playerName, []);
         }
 
         // Get per value for player
-        var per = parseFloat(stats[perIndex]);
+        var per = parseFloat(stats[9]);
 
         // Add per value to player's array (the next quarter)
         playerMap.get(playerName).push(per);
     }
 
-    // Add the players to the bench.
-    displayPlayerBench();
+    displayPlayerBench()    
 }
 
 // Function to add the players to the bench to start the game.
@@ -135,9 +135,9 @@ function displayPlayerCards() {
     }
 }
 
-// This function is called each time a player button is selected. A player's
-// button being selected indicates that the player either moving to the
-// court or moving to the bench for a water break.
+// This function is called each time a player button is clicked. A player
+// button being clicked indicates the players is either moving to the court
+// or to the bench for a water break
 function movePlayer() {
     // Don't let the coach change players during a quarter.
     if(quarterInPlay) {
